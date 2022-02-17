@@ -35,39 +35,54 @@ library("palmerpenguins")
 
 # Problem 1
 
-For this problem you will need to include some LaTex code. Please install latex on your computer and then consult Compulsor1.Rmd for hints how to write formulas in LaTex.
-
-$E[(y_0 - \hat{f}(x_0))^2]$
-$=E[y_0^2 -2y_0 \hat{f}(x_0) + \hat{f}(x_0)^2]$
-$=E[y_0^2] -2E[y_0 \hat{f}(x_0)] + E[\hat{f}(x_0)^2]$
-$=E[y_0]^2 + Var[y_0] -2E[y_0 \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$
-$=E[f(x_0) + \epsilon]^2 + Var[f(x_0) + \epsilon] -2E[(f(x_0) + \epsilon) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$
-It is assumed that $\epsilon$ is independent of $x$, and that $E[\epsilon]=0$.
-$=E[f(x_0) + \epsilon]^2 + Var[f(x_0) + \epsilon] -2E[\epsilon \hat{f}(x_0)] - 2E[f(x_0) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$
-$=E[f(x_0)]^2 + Var[f(x_0)] + Var[\epsilon] -2E[\epsilon \hat{f}(x_0)] - 2E[f(x_0) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$
-$=E[f(x_0)]^2 - 2E[f(x_0) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)] + Var[\epsilon]$
-$=f(x_0)^2 - 2f(x_0) E[\hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)] + Var[\epsilon]$
-$=(f(x_0) -E[\hat{f}(x_0)])^2 + Var[\hat{f}(x_0)] + Var[\epsilon]$
-Where 
-  $Var[\epsilon]$ is the irreducible error,
-  $Var[\hat{f}(x_0)]$ is the variance of the prediction, and 
-  $(f(x_0) -E[\hat{f}(x_0)])^2$
-
-
-
-
-
 ## a)
+
+$E[(y_0 - \hat{f}(x_0))^2]$  
+$=E[y_0^2 -2y_0 \hat{f}(x_0) + \hat{f}(x_0)^2]$  
+$=E[y_0^2] -2E[y_0 \hat{f}(x_0)] + E[\hat{f}(x_0)^2]$  
+$=E[y_0]^2 + Var[y_0] -2E[y_0 \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$  
+$=E[f(x_0) + \epsilon]^2 + Var[f(x_0) + \epsilon] -2E[(f(x_0) + \epsilon) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$  
+It is assumed that $\epsilon$ is independent of $x$, and that $E[\epsilon]=0$.  
+$=E[f(x_0) + \epsilon]^2 + Var[f(x_0) + \epsilon] -2E[\epsilon \hat{f}(x_0)] - 2E[f(x_0) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$  
+$=E[f(x_0)]^2 + Var[f(x_0)] + Var[\epsilon] -2E[\epsilon \hat{f}(x_0)] - 2E[f(x_0) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)]$  
+$=E[f(x_0)]^2 - 2E[f(x_0) \hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)] + Var[\epsilon]$  
+$=f(x_0)^2 - 2f(x_0) E[\hat{f}(x_0)] + E[\hat{f}(x_0)]^2 + Var[\hat{f}(x_0)] + Var[\epsilon]$  
+$=(f(x_0) -E[\hat{f}(x_0)])^2 + Var[\hat{f}(x_0)] + Var[\epsilon]$  
+Where  
+    $Var[\epsilon]$ is the irreducible error,  
+    $Var[\hat{f}(x_0)]$ is the variance of the prediction, and   
+    $(f(x_0) -E[\hat{f}(x_0)])^2$  
 
 ## b)
 
+Irreducible error:
+  - The irreducible error is the error made by the true function f, implying that the irreducible error will always exist no matter how well the model is fit.
+    It may stem from factors that are not captured by the covariates or an inherent stochastisity in the response variable. 
+Reducible error:
+  - The reducible error is caused by the discrepency between the fitted model and the true relationship, and it is the sum of the square of the bias, and the         variance
+Variance:
+  - The variance is typically caused by overfitting the model to the training data. This implies that a new set of training could result in a vastly different 
+    model.
+Bias:
+  - The bias is typically caused by underfitting the model. A high bias is usually found in an inflexible model that fails to capture nuances in the relationship.
+  
 ## c)
+
+1. True
+2. False
+3. True
+4. False
 
 ## d)
 
+1. True 
+2. False
+3. False 
+4. False
+
 ## e)
 
- 
+(iii) 0.76 
 
 # Problem 2
 
@@ -82,11 +97,116 @@ head(penguins)
 
 ## a)
 
+Error 1:
+  - The sex covariate is rejected on the basis of a low p-value. This is wrong because a low p-value 
+    indicates that the probability of observing a more extreme value given the null hypothesis is low. 
+    In this case, the p-value is way too low to be ignored.
+    
+Error 2:
+  - The null hypothesis is tested separately for the categorical covariate. This is incorrect when the covariate has more than two categories, 
+    because the dummy variables truly represent the same covariate. Hence, the F-test must be applied in order to evaluate the significance of the categorical
+    covariate, as it can test multiple variables at the same time. The basis on which he kept the species covariate is therefore invalid.
+    
+Error 3:
+  - The assumption that the Chinstrap penguins are the largest is possibly wrong, as the interaction term between bill depth and species must also be taken into     account.
+  
 ## b) 
+```{r, eval=TRUE}
+library(GGally)
+ggpairs(penguins)
+```
+The pairs functions helps with identifying correlations in the data. In this case, the boxplot between sex and body weight indicates a relationship.
  
 ## c)
+```{r, eval=TRUE}
+############## =^._.^= ~~~Oskar and Halvor'S CODE~~~ =^._.^= ##############
+############## install.packages('palmerpenguins') # Run if you haven't installed this before.
+library(ggfortify)
+library(palmerpenguins) # Contains the data set 'penguins'.
+data(penguins)
+# We do not discard island, as the pairs plot suggests a correlation with body mass.
+Penguins <- subset(penguins, select = -c(year))
+
+# Fit the model as specified in advance based on expert knowledge with the inclusion of island:
+penguin.model <- lm(body_mass_g ~ flipper_length_mm + sex + bill_depth_mm * species + island,
+data = Penguins)
+
+# Look at the model coefficients
+summary(penguin.model)$coefficients
+anova(penguin.model)
+
+# We see from the f test that island is likely not important after all. We do, however, see that the interaction term and species are indeed significant.
+
+# Fit final model with sex
+final.model <- lm(body_mass_g ~ flipper_length_mm + bill_depth_mm * species + sex, data = Penguins)
+
+summary(final.model)
+anova(final.model)
+
+autoplot(final.model,smooth.colour="red")
+```
+
+**_REPORT: PREDICTION OF PENGUIN BODY MASS, by Oskar and Halvor :3_**
+We begin with a linear regression model with body mass as the response, and flipper length,
+bill depth, species, island and sex as covariates, as well as an interaction effect between bill depth and
+species. We see that the island term has a large p-value and it is therefore discarded, as it does not seem to be correlated with body mass. From the f-test we see that both the categorical variables are probably significant. The final model can be described depending on the species of the
+penguin:
+$$
+\begin{aligned}
+  \hat{y}_{adelie} &= \hat\beta_0 + \hat\beta_{flipper\_length} x_{flipper\_length} + \hat\beta_{sex\_male} x_{sex\_male} +    \hat\beta_{bill\_depth} x_{bill\_depth} \\
+  \hat{y}_{chinstrap} &= \hat\beta_0 + \hat\beta_{flipper\_length} x_{flipper\_length} +  \hat\beta_{sex\_male} x_{sex\_male} +  (\hat\beta_{bill\_depth} + \hat\beta_{bill\_depth:chinstrap}) x_{bill\_depth} + \hat\beta_{chinstrap} \\
+\hat{y}_{gentoo} &= \hat\beta_0 + \hat\beta_{flipper\_length} x_{flipper\_length} +  \hat\beta_{sex\_male} x_{sex\_male} +  (\hat\beta_{bill\_depth} + \hat\beta_{bill\_depth:gentoo}) x_{bill\_depth} + \hat\beta_{gentoo} 
+\end{aligned}
+$$
+(where $\hat y_{adelie}$ is the predicted body mass for Adelie penguins, $\hat\beta_0$ is the estimated intercept, $x_{flipper\_length}$ is the flipper length covariate, $\hat\beta_{flipper\_length}$ is the estimated flipper length coefficient, etc.) 
+Note that $x_{sex\_male}$ is 1 if the penguin is male and 0 if female.
+In the final model, all terms have small (<0.05) f-values, signaling a strong correlation with the response.
+The assumptions of a linear model can be checked with the four plot supplied by the autoplot() function.
+From the qq-plot we see strong evidence that the residuals are normally distributed.
+From the Tukey-Anscombe diagram we see evidence of the residuals having expectation $0$ and equal $\sigma^2$. This is also backed up by the scale location plot. There is also no apparent pattern 
+in the T-A diagram, suggesting that the residuals are independent.
+The leverage plot is useful for determining outliers with high leverage. There is one data point in particular that warrants further inspection, as it has quite high leverage and might be an outlier.
 
 
 # Problem 3
+```{r, eval=TRUE}
+library(tidyverse)
+library(GGally)
+# Create a new boolean variable indicating whether or not the penguin is an
+# Adelie penguin
+Penguins$adelie <- ifelse(Penguins$species == "Adelie", 1, 0)
+# Select only relevant variables and remove all rows with missing values in body
+# mass, flipper length, sex or species.
+Penguins_reduced <- Penguins %>% dplyr::select(body_mass_g, flipper_length_mm, adelie) %>%
+mutate(body_mass_g = as.numeric(body_mass_g), flipper_length_mm = as.numeric(flipper_length_mm)) %>%drop_na()
+set.seed(4268)
+# 70% of the sample size for training set
+training_set_size <- floor(0.7 * nrow(Penguins_reduced))
+train_ind <- sample(seq_len(nrow(Penguins_reduced)), size = training_set_size)
+train <- Penguins_reduced[train_ind, ]
+test <- Penguins_reduced[-train_ind, ]
+```
+```{r, eval=TRUE}
+penguin.glm = glm(adelie ~ ., data=train, family="binomial")
+penguin.glm.probs = predict(penguin.glm, type="response", newdata=test)
+penguin.glm.preds = ifelse(penguin.glm.probs > 0.5, 1, 0)
+conf.glm = table(penguin.glm.preds, test$adelie)
+```
+```{r, eval=TRUE}
+library(MASS)
+penguin.qda = qda(adelie ~ ., data=train)
+penguin.qda.probs = predict(penguin.qda, newdata=test)$posterior
+penguin.qda.preds = predict(penguin.qda, newdata=test)$class
+conf.qda = table(penguin.qda.preds, test$adelie)
+```
+```{r, eval=TRUE}
+penguin.glm = glm(adelie ~ ., data=train, family="binomial")
+penguin.glm.probs = predict(penguin.glm, type="response", newdata=test)
+penguin.glm.preds = ifelse(penguin.glm.probs > 0.5, 1, 0)
+table(penguin.glm.preds, test$adelie)
+```
+
+
+
 
 # Problem 4
