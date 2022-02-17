@@ -52,8 +52,11 @@ E[(y_0 - \hat{f}(x_0))^2] &= E[y_0^2 -2y_0 \hat{f}(x_0) + \hat{f}(x_0)^2] \\
 $$  
 
 Where:
+
  - $Var[\epsilon]$ is the irreducible error
+ 
  - $Var[\hat{f}(x_0)]$ is the variance of the prediction
+ 
  - $(f(x_0) -E[\hat{f}(x_0)])^2$ is the bias if the prediction
 
 
@@ -61,14 +64,18 @@ Where:
 
 Irreducible error:
   - The irreducible error is the error made by the true function f, implying that the irreducible error will always exist no matter how well the model is fit.
-    It may stem from factors that are not captured by the covariates or an inherent stochastisity in the response variable. 
+    It may stem from factors that are not captured by the covariates or an inherent stochastisity in the response variable.
+    
 Reducible error:
-  - The reducible error is caused by the discrepency between the fitted model and the true relationship, and it is the sum of the square of the bias, and the         variance
-Variance:
-  - The variance is typically caused by overfitting the model to the training data. This implies that a new set of training could result in a vastly different 
-    model.
-Bias:
-  - The bias is typically caused by underfitting the model. A high bias is usually found in an inflexible model that fails to capture nuances in the relationship.
+  - The reducible error is caused by the discrepency between the fitted model and the true relationship, and it is the sum of the square of the bias, and the variance
+  
+  -Variance:
+  
+    - The variance is typically caused by overfitting the model to the training data. This implies that a new set of training could result in a vastly different model.
+    
+  - Bias:
+  
+    - The bias is typically caused by underfitting the model. A high bias is usually found in an inflexible model that fails to capture nuances in the relationship.
   
 ## c)
 
@@ -101,18 +108,18 @@ head(penguins)
 
 ## a)
 
-Error 1:
-  - The sex covariate is rejected on the basis of a low p-value. This is wrong because a low p-value 
+- Error 1:
+    The sex covariate is rejected on the basis of a low p-value. This is wrong because a low p-value 
     indicates that the probability of observing a more extreme value given the null hypothesis is low. 
     In this case, the p-value is way too low to be ignored.
     
-Error 2:
-  - The null hypothesis is tested separately for the categorical covariate. This is incorrect when the covariate has more than two categories, 
-    because the dummy variables truly represent the same covariate. Hence, the F-test must be applied in order to evaluate the significance of the categorical
-    covariate, as it can test multiple variables at the same time. The basis on which he kept the species covariate is therefore invalid.
+- Error 2:
+The null hypothesis is tested separately for the categorical covariate. This is incorrect when the covariate has more than two categories, 
+because the dummy variables truly represent the same covariate. Hence, the F-test must be applied in order to evaluate the significance of the categorical
+covariate, as it can test multiple variables at the same time. The basis on which he kept the species covariate is therefore invalid.
     
-Error 3:
-  - The assumption that the Chinstrap penguins are the largest is possibly wrong, as the interaction term between bill depth and species must also be taken into     account.
+- Error 3:
+The assumption that the Chinstrap penguins are the largest is possibly wrong, as the interaction term between bill depth and species must also be taken into     account.
   
 ## b) 
 ```{r, eval=TRUE}
@@ -124,14 +131,15 @@ The pairs functions helps with identifying correlations in the data. In this cas
 ## c)
 ```{r, eval=TRUE}
 ############## =^._.^= ~~~Oskar and Halvor'S CODE~~~ =^._.^= ##############
-############## install.packages('palmerpenguins') # Run if you haven't installed this before.
+############## install.packages('palmerpenguins') # Run if you haven't installed before.
 library(ggfortify)
 library(palmerpenguins) # Contains the data set 'penguins'.
 data(penguins)
 # We do not discard island, as the pairs plot suggests a correlation with body mass.
 Penguins <- subset(penguins, select = -c(year))
 
-# Fit the model as specified in advance based on expert knowledge with the inclusion of island:
+# Fit the model as specified in advance based on expert knowledge 
+# with the inclusion of island:
 penguin.model <- lm(body_mass_g ~ flipper_length_mm + sex + bill_depth_mm * species + island,
 data = Penguins)
 
@@ -139,7 +147,8 @@ data = Penguins)
 summary(penguin.model)$coefficients
 anova(penguin.model)
 
-# We see from the f test that island is likely not important after all. We do, however, see that the interaction term and species are indeed significant.
+# We see from the f test that island is likely not important after all. 
+# We do, however, see that the interaction term and species are indeed significant.
 
 # Fit final model with sex
 final.model <- lm(body_mass_g ~ flipper_length_mm + bill_depth_mm * species + sex, data = Penguins)
@@ -157,9 +166,12 @@ species. We see that the island term has a large p-value and it is therefore dis
 penguin:
 $$
 \begin{aligned}
-  \hat{y}_{adelie} &= \hat\beta_0 + \hat\beta_{flipper\_length} x_{flipper\_length} + \hat\beta_{sex\_male} x_{sex\_male} +    \hat\beta_{bill\_depth} x_{bill\_depth} \\
-  \hat{y}_{chinstrap} &= \hat\beta_0 + \hat\beta_{flipper\_length} x_{flipper\_length} +  \hat\beta_{sex\_male} x_{sex\_male} +  (\hat\beta_{bill\_depth} + \hat\beta_{bill\_depth:chinstrap}) x_{bill\_depth} + \hat\beta_{chinstrap} \\
-\hat{y}_{gentoo} &= \hat\beta_0 + \hat\beta_{flipper\_length} x_{flipper\_length} +  \hat\beta_{sex\_male} x_{sex\_male} +  (\hat\beta_{bill\_depth} + \hat\beta_{bill\_depth:gentoo}) x_{bill\_depth} + \hat\beta_{gentoo} 
+  \hat{y}_{adelie} = \hat\beta_0 &+ \hat\beta_{flipper\_length} x_{flipper\_length} + \hat\beta_{sex\_male} x_{sex\_male} \\
+  &+ \hat\beta_{bill\_depth} x_{bill\_depth} \\
+  \hat{y}_{chinstrap} = \hat\beta_0 &+ \hat\beta_{flipper\_length} x_{flipper\_length} +  \hat\beta_{sex\_male} x_{sex\_male} \\
+  &+ (\hat\beta_{bill\_depth} + \hat\beta_{bill\_depth:chinstrap}) x_{bill\_depth} + \hat\beta_{chinstrap} \\
+\hat{y}_{gentoo} = \hat\beta_0 &+ \hat\beta_{flipper\_length} x_{flipper\_length} +  \hat\beta_{sex\_male} x_{sex\_male} \\
+&+ (\hat\beta_{bill\_depth} + \hat\beta_{bill\_depth:gentoo}) x_{bill\_depth} + \hat\beta_{gentoo} 
 \end{aligned}
 $$
 (where $\hat y_{adelie}$ is the predicted body mass for Adelie penguins, $\hat\beta_0$ is the estimated intercept, $x_{flipper\_length}$ is the flipper length covariate, $\hat\beta_{flipper\_length}$ is the estimated flipper length coefficient, etc.) 
@@ -183,7 +195,8 @@ Penguins$adelie <- ifelse(Penguins$species == "Adelie", 1, 0)
 # Select only relevant variables and remove all rows with missing values in body
 # mass, flipper length, sex or species.
 Penguins_reduced <- Penguins %>% dplyr::select(body_mass_g, flipper_length_mm, adelie) %>%
-mutate(body_mass_g = as.numeric(body_mass_g), flipper_length_mm = as.numeric(flipper_length_mm)) %>%drop_na()
+mutate(body_mass_g = as.numeric(body_mass_g),
+       flipper_length_mm = as.numeric(flipper_length_mm)) %>%drop_na()
 set.seed(4268)
 # 70% of the sample size for training set
 training_set_size <- floor(0.7 * nrow(Penguins_reduced))
@@ -238,7 +251,7 @@ cat("Specificity for KNN:", specificity(conf.knn), "\n")
 ```
 
 ## b)
-
+### (i)
 ```{r, eval=TRUE}
 library(pROC)
 library(plotROC)
@@ -253,8 +266,77 @@ auc(roc.qda)
 roc.knn = roc(response = test$adelie, predictor = penguin.knn.probs, direction = "<")
 plot(roc.knn)
 auc(roc.knn)
+head(train)
 ```
 
+### (ii)
+From the ROC plots it seems like the logistic model and the QDA perform the best.
+This is backed up by their respective AUC values (0.9391 and 0.938).
+The KNN model, however, only has an AUC value of 0.8417, implying that it performs quite a bit worse on predicting the test data.
+
+### (iii)
+Since $p=2$ we can easily visualize the three different models, which helps with interpretability. The logistic regression might be the easiest to interpret, as each of its weights correlate to the magnitude a change to the corresponding predictor has on the response value. As a result of this, increasing a variable will always increase or decrease the response value, depending on the sign of the weight (unlike QDA or KNN, where increasing the value of a predictor might increase the response value in some interval, while decreasing it in another interval).
+
+## c)
+(iii) We multiply by 2.038
+
+## d)
+```{r, eval=TRUE}
+penguin.glm.plot = ggplot(Penguins_reduced, aes(x=body_mass_g, y=flipper_length_mm, color=factor(adelie))) + geom_point(size=1.5, show.legend = TRUE) + geom_abline(intercept = -coef(penguin.glm)[1] / coef(penguin.glm)[3], slope = -coef(penguin.glm)[2] / coef(penguin.glm)[3], size = 1, alpha = 0.75)
+
+penguin.glm.plot
+```
+The plot show the true species (the colored dots) and our prediction boundary. All dots that fall below the boundary would be classifies as 1 (adelie), while dots above the boundary would be classified as 0 (not adelie). 
+$$
+\text{The formula directly follows from the definition of the logistic model:} \\
+\log{\frac{p}{1-p}}=\beta_0 + \beta_1 x_1 + \beta_2 x_2 \\
+\text{Reordering the terms, we can express the relation between } x_1 \text{ and } x_2 \text{ linearly:} \\
+x_2 = \frac{\log{\frac{p}{1-p}} - \beta_0}{\beta_2} - \frac{\beta_1 x_1}{\beta_2} \\
+\text{We previously set the boundary at } p=1/2 \text{. Inserting this gives:} \\
+x_2 = -\frac{\beta_0}{\beta_2} - \frac{\beta_1 x_1}{\beta_2}
+$$
 
 
 # Problem 4
+
+## a)
+
+1. True 
+2. False
+3. False 
+4. False
+
+## b)
+```{r, eval=TRUE}
+id <- "1chRpybM5cJn4Eow3-_xwDKPKyddL9M2N" # google file ID
+d.chd <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id))
+# head(d.chd)
+chd.glm = glm(chd~sbp + sex + smoking ,data = d.chd, family = "binomial")
+summary(chd.glm)
+chance1 = predict(chd.glm, type = "response", newdata = data.frame(sbp=150, sex=1, smoking=0))
+cat("Chance of chd for non-smoking male with sbp 150: ", chance1 * 100, "%", sep = "")
+```
+
+## c)
+```{r, eval=TRUE}
+library(boot)
+set.seed(123)
+boot.fn <- function(data,index){
+  chd.glm = glm(chd ~ sbp + sex + smoking, family="binomial",data=data,subset=index)
+  return(predict(chd.glm, type = "response", newdata = data.frame(sbp=150, sex=1, smoking=0)))
+}
+
+chd.boot = boot(data = d.chd, statistic = boot.fn, R = 1000)
+summary(chd.boot$t)
+# The expected value is 0.10329, or 10.329%
+chd.boot.ci = boot.ci(chd.boot)
+print(chd.boot.ci)
+# The plausible values (within the 95 percentile interval) range from 0.0388 to 0.2019.
+```
+
+## d)
+
+1. False
+2. False
+3. False
+4. True
