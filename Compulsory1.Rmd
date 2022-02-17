@@ -169,6 +169,7 @@ The leverage plot is useful for determining outliers with high leverage. There i
 
 
 # Problem 3
+## a)
 ```{r, eval=TRUE}
 library(tidyverse)
 library(GGally)
@@ -186,12 +187,14 @@ train_ind <- sample(seq_len(nrow(Penguins_reduced)), size = training_set_size)
 train <- Penguins_reduced[train_ind, ]
 test <- Penguins_reduced[-train_ind, ]
 ```
+### (i)
 ```{r, eval=TRUE}
 penguin.glm = glm(adelie ~ ., data=train, family="binomial")
 penguin.glm.probs = predict(penguin.glm, type="response", newdata=test)
 penguin.glm.preds = ifelse(penguin.glm.probs > 0.5, 1, 0)
 conf.glm = table(penguin.glm.preds, test$adelie)
 ```
+### (ii)
 ```{r, eval=TRUE}
 library(MASS)
 penguin.qda = qda(adelie ~ ., data=train)
@@ -199,13 +202,54 @@ penguin.qda.probs = predict(penguin.qda, newdata=test)$posterior
 penguin.qda.preds = predict(penguin.qda, newdata=test)$class
 conf.qda = table(penguin.qda.preds, test$adelie)
 ```
+### (iii)
 ```{r, eval=TRUE}
-penguin.glm = glm(adelie ~ ., data=train, family="binomial")
-penguin.glm.probs = predict(penguin.glm, type="response", newdata=test)
-penguin.glm.preds = ifelse(penguin.glm.probs > 0.5, 1, 0)
-table(penguin.glm.preds, test$adelie)
+library(class)
+penguin.knn = knn(train = train, test = test, cl = train$adelie, k=25, prob=T)
+penguin.knn.probs = attributes(penguin.knn)$prob
+not.adelie = which(penguin.knn == 0)
+penguin.knn.probs[not.adelie] = 1-penguin.knn.probs[not.adelie]
+conf.knn = table(penguin.knn, test$adelie)
+```
+### (iv)
+```{r, eval=TRUE}
+#True positive rate
+sensitivity = function(table){
+  return (table[2,2]/(table[2,2]+table[1,2]))
+}
+#True negative rate
+specificity = function(table){
+  return (table[1,1]/(table[1,1]+table[2,1]))
+}
+
+cat("Sensitivity for logistic regression:", sensitivity(conf.glm), "\n")
+cat("Specificity for logistic regression:", specificity(conf.glm), "\n")
+
+cat("Sensitivity for QDA:", sensitivity(conf.qda), "\n")
+cat("Specificity for QDA:", specificity(conf.qda), "\n")
+
+cat("Sensitivity for KNN:", sensitivity(conf.knn), "\n")
+cat("Specificity for KNN:", specificity(conf.knn), "\n")
+
 ```
 
+## b)
+
+```{r, eval=TRUE}
+library(pROC)
+library(plotROC)
+roc.glm = roc(response = test$adelie, predictor = penguin.glm.probs, direction = "<")
+plot(roc.glm)
+auc(roc.glm)
+
+roc.qda = roc(response = test$adelie, predictor = penguin.qda.probs[,2], direction = "<")
+plot(roc.qda)
+auc(roc.qda)
+
+roc.knn = roc(response = test$adelie, predictor = penguin.knn.probs, direction = "<")
+plot(roc.knn)
+auc(roc.knn)
+```
 
 
 

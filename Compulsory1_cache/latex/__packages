@@ -4,3 +4,15 @@ palmerpenguins
 ggplot2
 GGally
 ggfortify
+tidyverse
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+MASS
+class
+pROC
+plotROC
