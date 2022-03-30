@@ -1,0 +1,151 @@
+---
+subtitle: "TMA4268 Statistical Learning V2022"
+title: "Compulsory exercise 2: Group 37"
+author: "Oskar Jørgensen & Halvor L. Henriksen"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  # html_document
+  pdf_document
+---
+  
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE,tidy=TRUE,message=FALSE,warning=FALSE,strip.white=TRUE,prompt=FALSE,
+                      cache=TRUE, size="scriptsize",fig.width=4, fig.height=3,fig.align = "center")
+```
+
+```{r,eval=FALSE,echo=FALSE}
+# install.packages("ggplot2")
+# install.packages("tidyverse")
+# install.packages("palmerpenguins")
+# install.packages("GGally")
+# install.packages("MASS")
+# install.packages("caret")
+# install.packages("leaps")
+# install.packages("glmnet")
+# install.packages("pls")
+# install.packages("gam")
+# install.packages("e1071")
+# install.packages("tree")
+# install.packages("randomForest")
+# install.packages("ggfortify")
+# install.packages("latex2exp")
+```
+
+<!--  Etc (load all packages needed). -->
+
+
+# Problem 1
+
+```{r, eval=T}
+library(MASS)
+str(Boston)
+```
+
+```{r, eval=T}
+set.seed(1) 
+# pre-processing by scaling
+# NB! Strictly speaking, pre-processing should be done on a training set only and 
+# it should be done on a test set with statistics of the pre-processing from 
+# the training set. But, we're preprocessing the entire dataset here for convenience.
+boston <- scale(Boston, center=T, scale=T)
+# split into training and test sets
+train.ind = sample(1:nrow(boston), 0.8 * nrow(boston)) 
+boston.train = data.frame(boston[train.ind, ])
+boston.test = data.frame(boston[-train.ind, ])
+```
+
+ ## a)
+ 
+```{r, eval=T, echo=T}
+library(leaps)
+forward_selection = regsubsets(medv~., data=boston.train, method="forward", nvmax = ncol(boston.train) - 1)
+forward_summary = summary(forward_selection)
+backward_selection = regsubsets(medv~., data=boston.train, method="backward", nvmax = ncol(boston.train) - 1)
+backward_summary = summary(backward_selection)
+forward_summary$adjr2
+library(latex2exp)
+plot(c(1:(ncol(boston.train)-1)), forward_summary$adjr2, xlab = "# of predictors", ylab = TeX(r'($R^2$)'), col="blue", main = "RSS, Forward Selection")
+lines(c(1:(ncol(boston.train)-1)), forward_summary$adjr2, col="blue")
+points(c(1:(ncol(boston.train)-1)), backward_summary$adjr2, xlab = "# of predictors", ylab = TeX(r'($R^2$)'), col="red", main = "RSS, Backward Selection")
+lines(c(1:(ncol(boston.train)-1)), backward_summary$adjr2, col="red")
+legend(8, 0.6, legend=c("Forward", "Backward"), col=c("blue", "red"), lty=c(1,1), cex=0.8)
+```
+
+## b)
+```{r, eval=T, echo=T}
+# According to F-selection, the 4 best predictors are lstat, rm, ptratio and dis
+# We also must include the response, medv
+best_pred = names(coef(forward_selection, 4))
+best_pred = best_pred[2:5] # Remove the intercept
+new_boston.train = boston.train[c(best_pred, "medv")]
+```
+
+
+## c)
+```{r, eval=T, echo=T}
+library(glmnet)
+set.seed(1)
+x_train <- model.matrix(medv~.,boston.train)[,-1]
+y_train <- boston.train$medv
+?cv.glmnet
+cv.out= cv.glmnet(x_train, y_train, alpha=1, nfolds = 5)
+plot(cv.out)
+best_lambda_lasso <- cv.out$lambda.min
+cat("Best lambda:", best_lambda_lasso)
+coef(cv.out, s = "lambda.min")
+```
+
+## d)
+
+1. False
+2. False
+3. False
+4. True
+
+# Problem 2
+
+```{r}
+library(MASS)
+set.seed(1)
+# load a synthetic dataset
+id <- "1CWZYfrLOrFdrIZ6Hv73e3xxt0SFgU4Ph" # google file ID
+synthetic <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id))
+# split into training and test sets
+train.ind = sample(1:nrow(synthetic), 0.8 * nrow(synthetic)) 
+synthetic.train = data.frame(synthetic[train.ind, ])
+synthetic.test = data.frame(synthetic[-train.ind, ])
+# show head(..)
+# Y: response variable; X: predictor variable
+head(synthetic)
+```
+
+## a)
+
+```{r, eval=T, echo=T}
+set.seed(1)
+library(pls)
+pcr_fit = pcr(Y~., data=synthetic.train, scale=TRUE, validation="CV")
+validationplot(pcr_fit, val.type = "MSEP", legendpos = "topright")
+
+pls_fit = plsr(Y~., data=synthetic.train, scale=TRUE, validation="CV")
+validationplot(pls_fit, val.type = "MSEP", legendpos = "topright")
+```
+
+## b) 
+```{r, eval=T, echo=T}
+library(GGally)
+cor_matrix = round(cor(synthetic), 4)
+cor_matrix
+```
+### Difference between PCR and PSLR
+From the plots, we can see that PLSR performs substantially better than PCR. It captures most of the variability of the response using only 4 components. PCR, on the other hand, requires 10 components to match the result of PLSR, failing to reduce the dimensionality of the feature space. From the correlation matrix (provided above), we see that the covariates are highly uncorrelated, with the exception of X2 and X3 (rho = 0.95) and X1 and the response (rho = 0.70). This helps us explain why the PLSR is able to reduce the variance while also reduscing the dimensionality. As this method considers the response when constructing a principal component, it uses the correlation between X1 and Y to capture most of the variability of the response in the first principal component.
+
+TODO: finn ut hvor mye av x1 som er i komponent 1 i PCR og PLSR
+
+## c)
+
+
+# Problem 3
+
+# Problem 4

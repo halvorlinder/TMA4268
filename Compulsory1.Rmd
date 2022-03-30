@@ -57,24 +57,25 @@ Where:
  
  - $Var[\hat{f}(x_0)]$ is the variance of the prediction
  
- - $(f(x_0) -E[\hat{f}(x_0)])^2$ is the bias if the prediction
+ - $(f(x_0) -E[\hat{f}(x_0)])^2$ is the bias of the prediction
 
 
 ## b)
 
-Irreducible error:
+### Irreducible error:
+
   - The irreducible error is the error made by the true function f, implying that the irreducible error will always exist no matter how well the model is fit.
     It may stem from factors that are not captured by the covariates or an inherent stochastisity in the response variable.
     
-Reducible error:
+### Reducible error:
+
   - The reducible error is caused by the discrepency between the fitted model and the true relationship, and it is the sum of the square of the bias, and the variance
   
-  -Variance:
+  - Variance:
   
     - The variance is typically caused by overfitting the model to the training data. This implies that a new set of training could result in a vastly different model.
     
   - Bias:
-  
     - The bias is typically caused by underfitting the model. A high bias is usually found in an inflexible model that fails to capture nuances in the relationship.
   
 ## c)
@@ -96,8 +97,6 @@ Reducible error:
 (iii) 0.76 
 
 # Problem 2
-
-Here is a code chunk:
 
 ```{r, eval=TRUE}
 library(palmerpenguins) # Contains the data set "penguins".
@@ -124,13 +123,13 @@ The assumption that the Chinstrap penguins are the largest is possibly wrong, as
 ## b) 
 ```{r, eval=TRUE}
 library(GGally)
-ggpairs(penguins)
+ggpairs(penguins, out.height="500px", out.width="400px",fig.height=11,fig.width=10, upper=list(continuous = wrap("cor", size = 2))) + theme_grey(base_size = 5)+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 The pairs functions helps with identifying correlations in the data. In this case, the boxplot between sex and body weight indicates a relationship.
  
 ## c)
 ```{r, eval=TRUE}
-############## =^._.^= ~~~Oskar and Halvor'S CODE~~~ =^._.^= ##############
+############## =^._.^= ~~~Oskar and Halvor's CODE~~~ =^._.^= ##############
 ############## install.packages('palmerpenguins') # Run if you haven't installed before.
 library(ggfortify)
 library(palmerpenguins) # Contains the data set 'penguins'.
@@ -156,7 +155,7 @@ final.model <- lm(body_mass_g ~ flipper_length_mm + bill_depth_mm * species + se
 summary(final.model)
 anova(final.model)
 
-autoplot(final.model,smooth.colour="red")
+autoplot(final.model,smooth.colour="red", size=0.6)
 ```
 
 **_REPORT: PREDICTION OF PENGUIN BODY MASS, by Oskar and Halvor :3_**
@@ -181,7 +180,7 @@ The assumptions of a linear model can be checked with the four plot supplied by 
 From the qq-plot we see strong evidence that the residuals are normally distributed.
 From the Tukey-Anscombe diagram we see evidence of the residuals having expectation $0$ and equal $\sigma^2$. This is also backed up by the scale location plot. There is also no apparent pattern 
 in the T-A diagram, suggesting that the residuals are independent.
-The leverage plot is useful for determining outliers with high leverage. There is one data point in particular that warrants further inspection, as it has quite high leverage and might be an outlier.
+The leverage plot is useful for determining outliers with high leverage. There is one data point (314) in particular that warrants further inspection, as it has quite high leverage and might be an outlier.
 
 
 # Problem 3
@@ -266,13 +265,12 @@ auc(roc.qda)
 roc.knn = roc(response = test$adelie, predictor = penguin.knn.probs, direction = "<")
 plot(roc.knn)
 auc(roc.knn)
-head(train)
 ```
 
 ### (ii)
 From the ROC plots it seems like the logistic model and the QDA perform the best.
 This is backed up by their respective AUC values (0.9391 and 0.938).
-The KNN model, however, only has an AUC value of 0.8417, implying that it performs quite a bit worse on predicting the test data.
+The KNN model, however, only has an AUC value of 0.8417, implying that it performs quite a bit worse when predicting the test data.
 
 ### (iii)
 Since $p=2$ we can easily visualize the three different models, which helps with interpretability. The logistic regression might be the easiest to interpret, as each of its weights correlate to the magnitude a change to the corresponding predictor has on the response value. As a result of this, increasing a variable will always increase or decrease the response value, depending on the sign of the weight (unlike QDA or KNN, where increasing the value of a predictor might increase the response value in some interval, while decreasing it in another interval).
@@ -286,15 +284,20 @@ penguin.glm.plot = ggplot(Penguins_reduced, aes(x=body_mass_g, y=flipper_length_
 
 penguin.glm.plot
 ```
-The plot show the true species (the colored dots) and our prediction boundary. All dots that fall below the boundary would be classifies as 1 (adelie), while dots above the boundary would be classified as 0 (not adelie). 
-$$
-\text{The formula directly follows from the definition of the logistic model:} \\
-\log{\frac{p}{1-p}}=\beta_0 + \beta_1 x_1 + \beta_2 x_2 \\
-\text{Reordering the terms, we can express the relation between } x_1 \text{ and } x_2 \text{ linearly:} \\
-x_2 = \frac{\log{\frac{p}{1-p}} - \beta_0}{\beta_2} - \frac{\beta_1 x_1}{\beta_2} \\
-\text{We previously set the boundary at } p=1/2 \text{. Inserting this gives:} \\
-x_2 = -\frac{\beta_0}{\beta_2} - \frac{\beta_1 x_1}{\beta_2}
-$$
+The plot show the true species (the colored dots) and our prediction boundary. All dots that fall below the boundary would be classified as 1 (adelie), while dots above the boundary would be classified as 0 (not adelie) by our logistic regression model. 
+
+
+The formula directly follows from the definition of the logistic model:
+
+$\ln\frac{p}{1-p}=\beta_0 + \beta_1 x_1 + \beta_2 x_2$
+
+Reordering the terms, we can express the relation between $x_1$ and $x_2$ linearly:
+
+$x_2 = \frac{\ln\frac{p}{1-p} - \beta_0}{\beta_2} - \frac{\beta_1 x_1}{\beta_2}$
+
+We previously set the boundary at $p=1/2$. Inserting this gives:
+
+$x_2 = -\frac{\beta_0}{\beta_2} - \frac{\beta_1 x_1}{\beta_2}$
 
 
 # Problem 4
